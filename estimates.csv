@@ -1,0 +1,13 @@
+Story,Task,Estimate min (hr),Estimate max (hr),Actual,Comment
+Bootstrap,Initialize monorepo (pnpm workspaces, scaffolds),2,4,,
+DB & Entities,TypeORM setup, entities, migrations,3,6,,
+Auth,JWT cookie auth, Swagger security,3,6,,
+Tasks,CRUD, status transitions, log time,4,8,,
+AI,Daily plan provider + stub fallback,2,5,,
+Web,Auth flow, app shell, login/logout,3,6,,
+Web,Tasks list, inline status, modal create/edit, log time,4,8,,
+Web,AI suggest drawer UI,2,4,,
+Observability,Structured logging, request id, errors,2,4,,
+Docker,Compose with api/web/db, env examples,2,4,,
+CI & Tests,GitHub Actions, api unit/e2e, web tests,3,6,,
+Docs,README, architecture, endpoints, loom, estimates actuals,2,4,,
