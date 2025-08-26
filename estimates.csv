@@ -1,7 +1,7 @@
 Story,Task,Estimate min (hr),Estimate max (hr),Actual,Comment
-Bootstrap,Initialize monorepo (pnpm workspaces, scaffolds),2,4,,
-DB & Entities,TypeORM setup, entities, migrations,3,6,,
-Auth,JWT cookie auth, Swagger security,3,6,,
+Bootstrap,Initialize monorepo (pnpm workspaces, scaffolds),2,4,2,Monorepo scaffolded: pnpm workspaces, Nest + Next + shared; turborepo + lint
+DB & Entities,TypeORM setup, entities, migrations,3,6,2.5,TypeORM + entities wired; using synchronize in dev; migrations/seed removed per request
+Auth,JWT cookie auth, Swagger security,3,6,2,JWT httpOnly cookie auth (login/logout/me) + Swagger v8; cookie-parser + CORS
 Tasks,CRUD, status transitions, log time,4,8,,
 AI,Daily plan provider + stub fallback,2,5,,
 Web,Auth flow, app shell, login/logout,3,6,,
