@@ -20,8 +20,8 @@ async function bootstrap() {
     .addBearerAuth({ type: "http", scheme: "bearer", bearerFormat: "JWT" })
     .build();
 
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup("/docs", app, document);
+  const documentFactory = () => SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup("/docs", app, documentFactory);
 
   await app.listen(process.env.PORT ? Number(process.env.PORT) : 4000);
 }

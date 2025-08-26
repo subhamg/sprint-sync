@@ -1,7 +1,7 @@
 {
   "name": "sprint-sync",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.3.0",
   "packageManager": "pnpm@10.15.0",
   "workspaces": [
     "apps/*",
