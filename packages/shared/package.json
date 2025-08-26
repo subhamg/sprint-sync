@@ -1,19 +1,18 @@
 {
-  "name": "@sprintsync/shared",
-  "version": "0.0.0",
-  "private": true,
-  "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "dev": "tsc -w -p tsconfig.json",
-    "lint": "eslint . --ext .ts"
-  },
-  "dependencies": {
-    "zod": "^4.1.3"
-  },
-  "devDependencies": {
-    "typescript": "^5.9.2"
-  }
+    "name": "@sprintsync/shared",
+    "version": "0.0.0",
+    "private": true,
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc -p tsconfig.json",
+        "dev": "tsc -w -p tsconfig.json",
+        "lint": "eslint . --ext .ts"
+    },
+    "dependencies": {
+        "zod": "^4.1.3"
+    },
+    "devDependencies": {
+        "typescript": "^5.9.2"
+    }
 }

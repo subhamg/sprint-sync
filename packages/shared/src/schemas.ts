@@ -1,7 +1,11 @@
-import { z } from 'zod';
-import { TaskStatus } from './types.js';
+import { z } from "zod";
+import { TaskStatus } from "./types";
 
-export const taskStatusSchema = z.enum([TaskStatus.TODO, TaskStatus.IN_PROGRESS, TaskStatus.DONE]);
+export const taskStatusSchema = z.enum([
+  TaskStatus.TODO,
+  TaskStatus.IN_PROGRESS,
+  TaskStatus.DONE,
+]);
 
 export const createTaskSchema = z.object({
   title: z.string().min(1),
