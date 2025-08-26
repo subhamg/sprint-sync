@@ -1,0 +1,32 @@
+# Node
+node_modules/
+.pnp*
+
+# Builds
+apps/**/dist/
+apps/**/.next/
+.next/
+build/
+dist/
+coverage/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Env
+.env
+.env.*
+apps/**/.env
+apps/**/.env.*
+
+# Misc
+.DS_Store
+*.swp
+.idea/
+.vscode/
+.history/
