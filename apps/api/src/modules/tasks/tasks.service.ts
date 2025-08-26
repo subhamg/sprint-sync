@@ -1,18 +1,32 @@
-import { Injectable, NotFoundException, ForbiddenException } from "@nestjs/common";
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Task, TaskStatus } from "../../entities/task.entity";
-import { CreateTaskDto, LogTimeDto, UpdateStatusDto, UpdateTaskDto } from "./dtos";
+import {
+  CreateTaskDto,
+  LogTimeDto,
+  UpdateStatusDto,
+  UpdateTaskDto,
+} from "./dtos";
 
 @Injectable()
 export class TasksService {
-  constructor(@InjectRepository(Task) private readonly tasksRepo: Repository<Task>) {}
+  constructor(
+    @InjectRepository(Task) private readonly tasksRepo: Repository<Task>,
+  ) {}
 
   async listForUser(userId: string, isAdmin: boolean, all?: boolean) {
     if (isAdmin && all) {
       return this.tasksRepo.find({ order: { createdAt: "DESC" } });
     }
-    return this.tasksRepo.find({ where: { ownerId: userId }, order: { createdAt: "DESC" } });
+    return this.tasksRepo.find({
+      where: { ownerId: userId },
+      order: { createdAt: "DESC" },
+    });
   }
 
   async getById(id: string, userId: string, isAdmin: boolean) {
@@ -34,7 +48,12 @@ export class TasksService {
     return this.tasksRepo.save(task);
   }
 
-  async update(id: string, dto: UpdateTaskDto, userId: string, isAdmin: boolean) {
+  async update(
+    id: string,
+    dto: UpdateTaskDto,
+    userId: string,
+    isAdmin: boolean,
+  ) {
     const task = await this.getById(id, userId, isAdmin);
     if (!isAdmin && dto.ownerId && dto.ownerId !== task.ownerId) {
       throw new ForbiddenException();
@@ -59,7 +78,12 @@ export class TasksService {
     return false;
   }
 
-  async updateStatus(id: string, dto: UpdateStatusDto, userId: string, isAdmin: boolean) {
+  async updateStatus(
+    id: string,
+    dto: UpdateStatusDto,
+    userId: string,
+    isAdmin: boolean,
+  ) {
     const task = await this.getById(id, userId, isAdmin);
     if (!this.canTransition(task.status, dto.nextStatus)) {
       throw new ForbiddenException("Illegal status transition");
