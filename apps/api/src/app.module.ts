@@ -17,7 +17,7 @@ import { Task } from "./entities/task.entity";
         password: process.env.DB_PASSWORD,
         database: process.env.DB_NAME,
         autoLoadEntities: true,
-        synchronize: false,
+        synchronize: true,
       }),
     }),
     TypeOrmModule.forFeature([User, Task]),
