@@ -3,6 +3,8 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigModule } from "@nestjs/config";
 import { User } from "./entities/user.entity";
 import { Task } from "./entities/task.entity";
+import { UsersModule } from "./modules/users/users.module";
+import { AuthModule } from "./modules/auth/auth.module";
 
 @Module({
   imports: [
@@ -21,6 +23,8 @@ import { Task } from "./entities/task.entity";
       }),
     }),
     TypeOrmModule.forFeature([User, Task]),
+    UsersModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],

@@ -27,7 +27,7 @@ export class User {
   @Column({ type: "boolean", default: false })
   isAdmin!: boolean;
 
-  @OneToMany(() => Task, (task) => task.owner)
+  @OneToMany(() => Task, (task: Task) => task.owner)
   tasks!: Task[];
 
   @CreateDateColumn({ type: "timestamptz" })
