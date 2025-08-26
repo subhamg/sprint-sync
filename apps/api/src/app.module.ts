@@ -5,6 +5,7 @@ import { User } from "./entities/user.entity";
 import { Task } from "./entities/task.entity";
 import { UsersModule } from "./modules/users/users.module";
 import { AuthModule } from "./modules/auth/auth.module";
+import { TasksModule } from "./modules/tasks/tasks.module";
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { AuthModule } from "./modules/auth/auth.module";
     TypeOrmModule.forFeature([User, Task]),
     UsersModule,
     AuthModule,
+    TasksModule,
   ],
   controllers: [],
   providers: [],
