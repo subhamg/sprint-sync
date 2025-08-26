@@ -1,1 +1,2 @@
 # SprintSync
+# sprint-sync
