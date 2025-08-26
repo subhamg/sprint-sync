@@ -1,16 +1,14 @@
-import 'reflect-metadata';
-import path from 'node:path';
-import { DataSource } from 'typeorm';
-import dotenv from 'dotenv';
-import { fileURLToPath } from 'node:url';
+import "reflect-metadata";
+import path from "node:path";
+import { DataSource } from "typeorm";
+import dotenv from "dotenv";
 
-dotenv.config({ path: process.env.DOTENV_CONFIG_PATH || path.resolve(process.cwd(), '.env') });
+dotenv.config({ path: process.env.DOTENV_CONFIG_PATH || path.resolve(process.cwd(), ".env") });
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const projectRoot = process.cwd();
 
 const dataSource = new DataSource({
-  type: 'postgres',
+  type: "postgres",
   url: process.env.DATABASE_URL,
   host: process.env.DB_HOST,
   port: process.env.DB_PORT ? Number(process.env.DB_PORT) : undefined,
@@ -19,8 +17,8 @@ const dataSource = new DataSource({
   database: process.env.DB_NAME,
   synchronize: false,
   logging: false,
-  entities: [path.resolve(__dirname, '../src/entities/*.ts')],
-  migrations: [path.resolve(__dirname, './migrations/*.ts')],
+  entities: [path.resolve(projectRoot, "apps/api/src/entities/*.ts")],
+  migrations: [path.resolve(projectRoot, "apps/api/typeorm/migrations/*.ts")],
 });
 
 export default dataSource;
