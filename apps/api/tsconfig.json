@@ -15,8 +15,10 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "typeorm/**/*", "seed.ts"],
   "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
 }

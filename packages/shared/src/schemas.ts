@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { TaskStatus } from "./types";
+import { TaskStatus } from "./types.js";
 
 export const taskStatusSchema = z.enum([
   TaskStatus.TODO,
