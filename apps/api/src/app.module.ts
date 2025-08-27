@@ -6,10 +6,13 @@ import { Task } from "./entities/task.entity";
 import { UsersModule } from "./modules/users/users.module";
 import { AuthModule } from "./modules/auth/auth.module";
 import { TasksModule } from "./modules/tasks/tasks.module";
+import { ThrottlerModule } from "@nestjs/throttler";
+import { AiModule } from "./modules/ai/ai.module";
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    ThrottlerModule.forRoot([{ ttl: 60_000, limit: 30 }]),
     TypeOrmModule.forRootAsync({
       useFactory: () => ({
         type: "postgres",
@@ -27,6 +30,7 @@ import { TasksModule } from "./modules/tasks/tasks.module";
     UsersModule,
     AuthModule,
     TasksModule,
+    AiModule,
   ],
   controllers: [],
   providers: [],

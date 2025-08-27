@@ -18,8 +18,8 @@ export class AuthService {
     return user;
   }
 
-  async issueJwtCookie(userId: string) {
-    const token = await this.jwt.signAsync({ sub: userId });
+  async issueJwtCookie(user: { id: string; isAdmin: boolean }) {
+    const token = await this.jwt.signAsync({ sub: user.id, isAdmin: user.isAdmin });
     return token;
   }
 }
