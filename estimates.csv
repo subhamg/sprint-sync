@@ -5,7 +5,7 @@ Auth,JWT cookie auth, Swagger security,3,6,2,JWT httpOnly cookie auth (login/log
 Tasks,CRUD, status transitions, log time,4,8,2.5,CRUD, legal transitions, log-time; AdminGuard; ValidationPipe enabled
 AI,Daily plan provider + stub fallback,2,5,2,OpenAI provider w/ fallback stub; throttling; added isAdmin to JWT payload
 Web,Auth flow, app shell, login/logout,3,6,1.5,Redux + axios service; Mantine login; header w/ logout
-Web,Tasks list, inline status, modal create/edit, log time,4,8,,
+Web,Tasks list, inline status, modal create/edit, log time,4,8,1.5,List + status chip + log-time with React Query
 Web,AI suggest drawer UI,2,4,,
 Observability,Structured logging, request id, errors,2,4,,
 Docker,Compose with api/web/db, env examples,2,4,,
