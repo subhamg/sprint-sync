@@ -21,7 +21,10 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const user = await this.auth.validateUser(body.email, body.password);
-    const token = await this.auth.issueJwtCookie({ id: user.id, isAdmin: user.isAdmin });
+    const token = await this.auth.issueJwtCookie({
+      id: user.id,
+      isAdmin: user.isAdmin,
+    });
     res.cookie("ss_access", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -41,6 +44,9 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get("me")
   async me(@Req() req: Request) {
-    return { userId: (req as any).user.sub, isAdmin: (req as any).user.isAdmin === true };
+    return {
+      userId: (req as any).user.sub,
+      isAdmin: (req as any).user.isAdmin === true,
+    };
   }
 }
