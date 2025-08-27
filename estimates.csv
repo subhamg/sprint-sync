@@ -4,7 +4,7 @@ DB & Entities,TypeORM setup, entities, migrations,3,6,2.5,TypeORM + entities wir
 Auth,JWT cookie auth, Swagger security,3,6,2,JWT httpOnly cookie auth (login/logout/me) + Swagger v8; cookie-parser + CORS
 Tasks,CRUD, status transitions, log time,4,8,2.5,CRUD, legal transitions, log-time; AdminGuard; ValidationPipe enabled
 AI,Daily plan provider + stub fallback,2,5,2,OpenAI provider w/ fallback stub; throttling; added isAdmin to JWT payload
-Web,Auth flow, app shell, login/logout,3,6,,
+Web,Auth flow, app shell, login/logout,3,6,1.5,Redux + axios service; Mantine login; header w/ logout
 Web,Tasks list, inline status, modal create/edit, log time,4,8,,
 Web,AI suggest drawer UI,2,4,,
 Observability,Structured logging, request id, errors,2,4,,
