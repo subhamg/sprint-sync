@@ -6,8 +6,9 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { tasksService, TaskStatus } from "../../services/TasksService";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Container, Table, Title } from "@mantine/core";
+import { Container, Group, Table, Title } from "@mantine/core";
 import TaskRow from "../../components/TaskRow";
+import AiDrawer from "../../components/AiDrawer";
 
 export default function TasksPage() {
   const { userId } = useSelector((s: RootState) => s.auth);
@@ -40,9 +41,10 @@ export default function TasksPage() {
     <main>
       <AppHeader />
       <Container py="md">
-        <Title order={3} mb="sm">
-          My Tasks
-        </Title>
+        <Group justify="space-between" mb="sm">
+          <Title order={3}>My Tasks</Title>
+          <AiDrawer />
+        </Group>
         <Table striped highlightOnHover withRowBorders={false}>
           <Table.Tbody>
             {(data || []).map((t) => (

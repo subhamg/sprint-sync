@@ -6,7 +6,7 @@ Tasks,CRUD, status transitions, log time,4,8,2.5,CRUD, legal transitions, log-ti
 AI,Daily plan provider + stub fallback,2,5,2,OpenAI provider w/ fallback stub; throttling; added isAdmin to JWT payload
 Web,Auth flow, app shell, login/logout,3,6,1.5,Redux + axios service; Mantine login; header w/ logout
 Web,Tasks list, inline status, modal create/edit, log time,4,8,1.5,List + status chip + log-time with React Query
-Web,AI suggest drawer UI,2,4,,
+Web,AI suggest drawer UI,2,4,1,Drawer + service; wired to /ai/suggest and handled errors
 Observability,Structured logging, request id, errors,2,4,,
 Docker,Compose with api/web/db, env examples,2,4,,
 CI & Tests,GitHub Actions, api unit/e2e, web tests,3,6,,
