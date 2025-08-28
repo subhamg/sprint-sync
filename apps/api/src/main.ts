@@ -4,11 +4,17 @@ import { AppModule } from "./app.module";
 import cookieParser from "cookie-parser";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { ValidationPipe } from "@nestjs/common";
+import { RequestIdMiddleware } from "./common/logging/request-id.middleware";
+import { Logger, LoggerErrorInterceptor } from "nestjs-pino";
+import { LatencyLoggingInterceptor } from "./common/logging/latency.interceptor";
+import { GlobalHttpExceptionFilter } from "./common/logging/http-exception.filter";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { bufferLogs: true });
+  app.useLogger(app.get(Logger));
 
   app.use(cookieParser());
+  app.use(new RequestIdMiddleware().use as any);
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -16,6 +22,9 @@ async function bootstrap() {
       transform: true,
     }),
   );
+  app.useGlobalInterceptors(new LoggerErrorInterceptor(), app.get(LatencyLoggingInterceptor));
+  app.useGlobalFilters(app.get(GlobalHttpExceptionFilter));
+
   app.enableCors({
     origin: process.env.WEB_ORIGIN || "http://localhost:3000",
     credentials: true,
