@@ -9,6 +9,8 @@ import { TasksModule } from "./modules/tasks/tasks.module";
 import { ThrottlerModule } from "@nestjs/throttler";
 import { AiModule } from "./modules/ai/ai.module";
 import { LoggerModule } from "nestjs-pino";
+import { LatencyLoggingInterceptor } from "./common/logging/latency.interceptor";
+import { GlobalHttpExceptionFilter } from "./common/logging/http-exception.filter";
 
 @Module({
   imports: [
@@ -43,6 +45,6 @@ import { LoggerModule } from "nestjs-pino";
     AiModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [LatencyLoggingInterceptor, GlobalHttpExceptionFilter],
 })
 export class AppModule {}
