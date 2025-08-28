@@ -22,7 +22,10 @@ async function bootstrap() {
       transform: true,
     }),
   );
-  app.useGlobalInterceptors(new LoggerErrorInterceptor(), app.get(LatencyLoggingInterceptor));
+  app.useGlobalInterceptors(
+    new LoggerErrorInterceptor(),
+    app.get(LatencyLoggingInterceptor),
+  );
   app.useGlobalFilters(app.get(GlobalHttpExceptionFilter));
 
   app.enableCors({

@@ -1,7 +1,12 @@
-import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
-import { Observable, tap } from 'rxjs';
-import { requestContext } from './request-context';
-import { PinoLogger } from 'nestjs-pino';
+import {
+  CallHandler,
+  ExecutionContext,
+  Injectable,
+  NestInterceptor,
+} from "@nestjs/common";
+import { Observable, tap } from "rxjs";
+import { requestContext } from "./request-context";
+import { PinoLogger } from "nestjs-pino";
 
 @Injectable()
 export class LatencyLoggingInterceptor implements NestInterceptor {
@@ -33,7 +38,7 @@ export class LatencyLoggingInterceptor implements NestInterceptor {
       latencyMs,
     };
 
-    if (isError) this.logger.error(payload, 'request_error');
-    else this.logger.info(payload, 'request_complete');
+    if (isError) this.logger.error(payload, "request_error");
+    else this.logger.info(payload, "request_complete");
   }
 }
