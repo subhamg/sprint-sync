@@ -21,7 +21,20 @@ export default [
     },
   },
   {
-    files: ["apps/web/lib/**/*.{ts,tsx}", "apps/web/app/**/*.{ts,tsx}", "apps/web/components/**/*.{ts,tsx}"],
+    files: ["apps/api/**/*.ts", "packages/**/*.ts"],
+    languageOptions: {
+      parser: tsParser,
+      ecmaVersion: "latest",
+      sourceType: "module",
+      globals: { ...globals.node },
+    },
+  },
+  {
+    files: [
+      "apps/web/lib/**/*.{ts,tsx}",
+      "apps/web/app/**/*.{ts,tsx}",
+      "apps/web/components/**/*.{ts,tsx}",
+    ],
     languageOptions: {
       globals: {
         ...globals.browser,
