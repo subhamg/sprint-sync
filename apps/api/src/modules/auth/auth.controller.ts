@@ -75,7 +75,13 @@ export class AuthController {
   })
   @ApiResponse({
     status: 200,
-    schema: { example: { accessToken: "<jwt>", tokenType: "Bearer" } },
+    schema: {
+      example: {
+        accessToken: "jwt",
+        refreshToken: "jwt",
+        user: { id: "uuid", email: "demo@sprintsync.dev", isAdmin: false },
+      },
+    },
   })
   @Post("login")
   async login(@Body() dto: LoginDto) {
@@ -94,7 +100,13 @@ export class AuthController {
   @ApiOperation({ summary: "Current user" })
   @ApiResponse({
     status: 200,
-    schema: { example: { userId: "uuid", isAdmin: false } },
+    schema: {
+      example: {
+        userId: "uuid",
+        isAdmin: false,
+        name: "Demo User",
+      },
+    },
   })
   @UseGuards(JwtAuthGuard)
   @Get("me")
