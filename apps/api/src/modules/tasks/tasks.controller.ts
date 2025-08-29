@@ -48,7 +48,9 @@ export class TasksController {
   }
 
   @ApiOperation({ summary: "Create task" })
-  @ApiBody({ schema: { example: { title: "Build login", description: "Mantine form" } } })
+  @ApiBody({
+    schema: { example: { title: "Build login", description: "Mantine form" } },
+  })
   @ApiResponse({ status: 201 })
   @Post()
   async create(@Req() req: Request, @Body() dto: CreateTaskDto) {
@@ -66,7 +68,9 @@ export class TasksController {
   }
 
   @ApiOperation({ summary: "Update task" })
-  @ApiBody({ schema: { example: { title: "New title", description: "Updated" } } })
+  @ApiBody({
+    schema: { example: { title: "New title", description: "Updated" } },
+  })
   @Put(":id")
   async update(
     @Req() req: Request,
@@ -91,20 +95,6 @@ export class TasksController {
     return this.tasks.updateStatus(id, dto, user.sub, isAdmin);
   }
 
-  @ApiOperation({ summary: "Log time (minutes)" })
-  @ApiBody({ schema: { example: { minutes: 15 } } })
-  @Post(":id/log-time")
-  async logTime(
-    @Req() req: Request,
-    @Param("id") id: string,
-    @Body() dto: LogTimeDto,
-  ) {
-    const user = req.user as any;
-    const isAdmin = user?.isAdmin === true;
-    return this.tasks.logTime(id, dto, user.sub, isAdmin);
-  }
-
-  @ApiOperation({ summary: "Start timer" })
   @Post(":id/start-timer")
   async startTimer(@Req() req: Request, @Param("id") id: string) {
     const user = req.user as any;

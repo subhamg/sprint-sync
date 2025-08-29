@@ -21,6 +21,8 @@ import {
   ApiResponse,
   ApiTags,
 } from "@nestjs/swagger";
+import { Public } from "../../decorators/public.decorator";
+import { LoginDto } from "./dtos/login.dto";
 
 @ApiTags("Auth")
 @Controller("auth")
@@ -30,13 +32,21 @@ export class AuthController {
     private readonly users: UsersService,
   ) {}
 
+  @Public()
   @ApiOperation({ summary: "Register (disabled in production)" })
   @ApiBody({
     schema: {
-      example: { email: "demo@sprintsync.dev", name: "Demo User", password: "password123" },
+      example: {
+        email: "demo@sprintsync.dev",
+        name: "Demo User",
+        password: "password123",
+      },
     },
   })
-  @ApiResponse({ status: 201, schema: { example: { id: "uuid", email: "demo@sprintsync.dev" } } })
+  @ApiResponse({
+    status: 201,
+    schema: { example: { id: "uuid", email: "demo@sprintsync.dev" } },
+  })
   @Post("register")
   async register(
     @Body() body: { email: string; name: string; password: string },
@@ -56,20 +66,20 @@ export class AuthController {
     return { id: user.id, email: user.email };
   }
 
+  @Public()
   @ApiOperation({ summary: "Login and receive Bearer token" })
-  @ApiBody({ schema: { example: { email: "demo@sprintsync.dev", password: "password123" } } })
-  @ApiResponse({ status: 200, schema: { example: { accessToken: "<jwt>", tokenType: "Bearer" } } })
+  @ApiBody({
+    schema: {
+      example: { email: "demo@sprintsync.dev", password: "password123" },
+    },
+  })
+  @ApiResponse({
+    status: 200,
+    schema: { example: { accessToken: "<jwt>", tokenType: "Bearer" } },
+  })
   @Post("login")
-  async login(
-    @Body() body: { email: string; password: string },
-    @Res({ passthrough: true }) _res: Response,
-  ) {
-    const user = await this.auth.validateUser(body.email, body.password);
-    const token = await this.auth.issueJwtCookie({
-      id: user.id,
-      isAdmin: user.isAdmin,
-    });
-    return { accessToken: token, tokenType: "Bearer" };
+  async login(@Body() dto: LoginDto) {
+    return this.auth.login(dto.email, dto.password);
   }
 
   @ApiOperation({ summary: "Logout (no-op for Bearer)" })
@@ -82,13 +92,17 @@ export class AuthController {
 
   @ApiBearerAuth()
   @ApiOperation({ summary: "Current user" })
-  @ApiResponse({ status: 200, schema: { example: { userId: "uuid", isAdmin: false } } })
+  @ApiResponse({
+    status: 200,
+    schema: { example: { userId: "uuid", isAdmin: false } },
+  })
   @UseGuards(JwtAuthGuard)
   @Get("me")
   async me(@Req() req: Request) {
     return {
       userId: (req as any).user.sub,
       isAdmin: (req as any).user.isAdmin === true,
+      name: (req as any).user.name,
     };
   }
 }
