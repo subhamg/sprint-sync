@@ -43,7 +43,7 @@ export class AiService {
 
   private async callOpenAi(tasks: Task[]): Promise<AiPlanResponse> {
     const prompt = `You are an engineering assistant. Given the user's tasks (status, title, minutes):\n${tasks
-      .map((t) => `- [${t.status}] ${t.title} (${t.totalMinutes}m)`)
+      .map((t) => `- [${t.status}] ${t.title} (${t.totalMilliseconds}ms)`)
       .join(
         "\n",
       )}\nReturn a concise JSON with {summary, priorities[3], blocks[3]}.`;

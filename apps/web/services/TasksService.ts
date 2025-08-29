@@ -7,16 +7,35 @@ export interface TaskDto {
   title: string;
   description: string | null;
   status: TaskStatus;
-  totalMinutes: number;
+  totalMilliseconds: number;
   ownerId: string;
   createdAt: string;
   updatedAt: string;
+  isRunning?: boolean;
+  startedAt?: string | null;
 }
 
 export class TasksService {
   async list(params?: { all?: boolean }) {
     const { data } = await http.get<TaskDto[]>("/tasks", { params });
     return data;
+  }
+
+  async create(payload: { title: string; description?: string | null }) {
+    const { data } = await http.post<TaskDto>("/tasks", payload);
+    return data;
+  }
+
+  async update(
+    id: string,
+    payload: { title?: string; description?: string | null },
+  ) {
+    const { data } = await http.put<TaskDto>(`/tasks/${id}`, payload);
+    return data;
+  }
+
+  async remove(id: string) {
+    await http.delete(`/tasks/${id}`);
   }
 
   async updateStatus(id: string, nextStatus: TaskStatus) {
@@ -30,6 +49,20 @@ export class TasksService {
     const { data } = await http.post<TaskDto>(`/tasks/${id}/log-time`, {
       minutes,
     });
+    return data;
+  }
+
+  async startTimer(id: string) {
+    const { data } = await http.post<{ ok: true; startedAt: string }>(
+      `/tasks/${id}/start-timer`,
+    );
+    return data;
+  }
+
+  async stopTimer(id: string) {
+    const { data } = await http.post<{ task: TaskDto; addedMinutes: number }>(
+      `/tasks/${id}/stop-timer`,
+    );
     return data;
   }
 }

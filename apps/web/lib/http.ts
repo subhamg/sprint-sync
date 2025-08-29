@@ -1,45 +1,76 @@
-import axios from "axios";
+import axios, { AxiosError, AxiosInstance } from "axios";
+import {
+  getAccessToken,
+  getRefreshToken,
+  setTokens,
+  clearTokens,
+} from "lib/tokenStore";
 
 export const API_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
-export const http = axios.create({
+let refreshing: Promise<string | null> | null = null;
+
+export const http: AxiosInstance = axios.create({
   baseURL: API_URL,
-  withCredentials: true,
+  withCredentials: false,
   timeout: 15000,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
+// Attach Authorization header
+http.interceptors.request.use((config) => {
+  const token = getAccessToken();
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
+// Handle 401 + refresh token rotation
 http.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    // Normalize common API error shapes into a single Error(message)
-    const status = error?.response?.status;
-    const data = error?.response?.data;
+  (res) => res,
+  async (error: AxiosError<any>) => {
+    const original = error.config!;
+    const status = error.response?.status;
 
-    let message = "Request failed";
+    // If unauthorized and we have refresh token, try once
+    if (status === 401 && !original._retry) {
+      original._retry = true;
 
-    if (data) {
-      if (typeof data === "string") {
-        message = data;
-      } else if (typeof data?.message === "string") {
-        message = data.message;
-      } else if (Array.isArray(data?.message)) {
-        // class-validator ValidationPipe often returns string[] in message
-        message = data.message.join("; ");
-      } else if (data?.error) {
-        message = String(data.error);
+      if (!refreshing) {
+        refreshing = (async () => {
+          const rt = getRefreshToken();
+          if (!rt) return null;
+          try {
+            const { data } = await axios.post(
+              `${http.defaults.baseURL}/auth/refresh`,
+              { refreshToken: rt },
+            );
+            // expecting { accessToken, refreshToken? }
+            setTokens(data.accessToken, data.refreshToken ?? rt);
+            return data.accessToken as string;
+          } catch {
+            clearTokens();
+            return null;
+          } finally {
+            refreshing = null;
+          }
+        })();
       }
-    } else if (error?.message) {
-      message = error.message;
+
+      const newAccess = await refreshing;
+      if (newAccess) {
+        // retry original call with new token
+        (original.headers as any) = {
+          ...(original.headers || {}),
+          Authorization: `Bearer ${newAccess}`,
+        };
+        return http(original);
+      }
     }
 
-    if (status === 401) message = message || "Unauthorized";
-    if (status === 403) message = message || "Forbidden";
-    if (status === 404) message = message || "Not found";
-
-    return Promise.reject(new Error(message));
+    // Bubble up
+    throw error;
   },
 );

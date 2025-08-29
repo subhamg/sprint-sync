@@ -1,34 +1,27 @@
 "use client";
-import { Button, Paper, Text, TextInput, Title } from "@mantine/core";
+import { Button, Paper, TextInput, Title } from "@mantine/core";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
-import { setAuth } from "../../../lib/store";
 import { authService } from "../../../services/AuthService";
-import Link from "next/link";
 
-export default function LoginPage() {
+export default function SignupPage() {
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const dispatch = useDispatch();
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError(null);
     try {
+      await authService.register(email, name, password);
       await authService.login(email, password);
-      const who = await authService.me();
-      console.log("who", who);
-      dispatch(
-        setAuth({ userId: who.userId, isAdmin: who.isAdmin, name: who.name }),
-      );
       router.push("/tasks");
     } catch (err: any) {
-      setError(err.message || "Login failed");
+      setError(err.message || "Signup failed");
     } finally {
       setLoading(false);
     }
@@ -39,12 +32,19 @@ export default function LoginPage() {
       <Paper p="lg" withBorder style={{ width: 360 }}>
         <form onSubmit={onSubmit}>
           <Title order={3} mb="md">
-            Login
+            Sign up
           </Title>
           <TextInput
             label="Email"
             value={email}
             onChange={(e) => setEmail(e.currentTarget.value)}
+            mb="sm"
+            required
+          />
+          <TextInput
+            label="Name"
+            value={name}
+            onChange={(e) => setName(e.currentTarget.value)}
             mb="sm"
             required
           />
@@ -60,11 +60,8 @@ export default function LoginPage() {
             <div style={{ color: "crimson", marginBottom: 8 }}>{error}</div>
           )}
           <Button type="submit" fullWidth loading={loading}>
-            Sign in
+            Create account
           </Button>
-          <Text size="sm" mt="sm">
-            Don’t have an account? <Link href="/signup">Sign up</Link>
-          </Text>
         </form>
       </Paper>
     </main>

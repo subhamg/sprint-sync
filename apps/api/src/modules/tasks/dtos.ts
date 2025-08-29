@@ -46,5 +46,5 @@ export class UpdateStatusDto {
 export class LogTimeDto {
   @IsInt()
   @Min(1)
-  minutes!: number;
+  milliseconds!: number;
 }

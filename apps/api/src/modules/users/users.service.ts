@@ -16,4 +16,19 @@ export class UsersService {
   findById(id: string) {
     return this.usersRepo.findOne({ where: { id } });
   }
+
+  async createUser(params: {
+    email: string;
+    name: string;
+    passwordHash: string;
+    isAdmin?: boolean;
+  }) {
+    const user = this.usersRepo.create({
+      email: params.email,
+      name: params.name,
+      passwordHash: params.passwordHash,
+      isAdmin: !!params.isAdmin,
+    });
+    return this.usersRepo.save(user);
+  }
 }

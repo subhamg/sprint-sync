@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  ConflictException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -20,17 +21,22 @@ export class TasksService {
   ) {}
 
   async listForUser(userId: string, isAdmin: boolean, all?: boolean) {
-    if (isAdmin && all) {
-      return this.tasksRepo.find({ order: { createdAt: "DESC" } });
-    }
-    return this.tasksRepo.find({
-      where: { ownerId: userId },
-      order: { createdAt: "DESC" },
-    });
+    const tasks =
+      isAdmin && all
+        ? await this.tasksRepo.find({ order: { createdAt: "DESC" } })
+        : await this.tasksRepo.find({
+            where: { ownerId: userId },
+            order: { createdAt: "DESC" },
+          });
+
+    return tasks.map((t) => ({
+      ...t,
+      isRunning: !!t.startedAt,
+    }));
   }
 
   async getById(id: string, userId: string, isAdmin: boolean) {
-    const task = await this.tasksRepo.findOne({ where: { id } });
+    const task = await this.tasksRepo.findOneBy({ id });
     if (!task) throw new NotFoundException();
     if (!isAdmin && task.ownerId !== userId) throw new ForbiddenException();
     return task;
@@ -42,8 +48,9 @@ export class TasksService {
       title: dto.title,
       description: dto.description ?? null,
       status: TaskStatus.TODO,
-      totalMinutes: 0,
+      totalMilliseconds: 0,
       ownerId,
+      startedAt: null,
     });
     return this.tasksRepo.save(task);
   }
@@ -85,16 +92,28 @@ export class TasksService {
     isAdmin: boolean,
   ) {
     const task = await this.getById(id, userId, isAdmin);
-    if (!this.canTransition(task.status, dto.nextStatus)) {
+    if (!this.canTransition(task.status, dto.nextStatus) && !isAdmin) {
       throw new ForbiddenException("Illegal status transition");
     }
     task.status = dto.nextStatus;
     return this.tasksRepo.save(task);
   }
 
-  async logTime(id: string, dto: LogTimeDto, userId: string, isAdmin: boolean) {
+  async startTimer(id: string, userId: string, isAdmin: boolean) {
     const task = await this.getById(id, userId, isAdmin);
-    task.totalMinutes += dto.minutes;
-    return this.tasksRepo.save(task);
+    if (task.startedAt) throw new ConflictException("Timer already running");
+    task.startedAt = new Date();
+    await this.tasksRepo.save(task);
+    return { ok: true, startedAt: task.startedAt };
+  }
+
+  async stopTimer(id: string, userId: string, isAdmin: boolean) {
+    const task = await this.getById(id, userId, isAdmin);
+    if (!task.startedAt) throw new NotFoundException("No active timer");
+    const ms = Date.now() - new Date(task.startedAt).getTime();
+    task.totalMilliseconds += ms;
+    task.startedAt = null;
+    const saved = await this.tasksRepo.save(task);
+    return { task: saved, addedMilliseconds: ms };
   }
 }

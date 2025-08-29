@@ -1,5 +1,13 @@
 "use client";
-import { Badge } from "@mantine/core";
+import { Badge, Button, Menu } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
+import {
+  IconCaretDownFilled,
+  IconCheck,
+  IconChevronDown,
+  IconDots,
+} from "@tabler/icons-react";
+import { useState } from "react";
 
 export type TaskStatus = "TODO" | "IN_PROGRESS" | "DONE";
 
@@ -18,17 +26,48 @@ function nextStatus(status: TaskStatus): TaskStatus {
 export default function StatusChip({
   status,
   onChange,
+  isAdmin,
 }: {
   status: TaskStatus;
   onChange: (next: TaskStatus) => void;
+  isAdmin: boolean;
 }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  function handleChange(next: TaskStatus) {
+    if (status === "DONE" && !isAdmin) {
+      notifications.show({
+        color: "yellow",
+        message:
+          "You cannot change the status of a done task. Only admins can do this.",
+      });
+      return;
+    }
+    setIsOpen(false);
+    onChange(next);
+  }
+
   return (
-    <Badge
-      color={colorFor(status)}
-      onClick={() => onChange(nextStatus(status))}
-      style={{ cursor: "pointer" }}
-    >
-      {status.replace("_", " ")}
-    </Badge>
+    <Menu opened={isOpen} onClose={() => setIsOpen(false)}>
+      <Menu.Target>
+        <Button
+          variant="filled"
+          color={colorFor(status)}
+          size="xs"
+          tt="capitalize"
+          onClick={() => handleChange(nextStatus(status))}
+          rightSection={<IconCaretDownFilled size={16} />}
+        >
+          {status.replace("_", " ").toLowerCase()}
+        </Button>
+      </Menu.Target>
+      <Menu.Dropdown>
+        <Menu.Item onClick={() => onChange("TODO")}>Todo</Menu.Item>
+        <Menu.Item onClick={() => onChange("IN_PROGRESS")}>
+          In Progress
+        </Menu.Item>
+        <Menu.Item onClick={() => onChange("DONE")}>Done</Menu.Item>
+      </Menu.Dropdown>
+    </Menu>
   );
 }

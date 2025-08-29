@@ -29,7 +29,7 @@ export class Task {
   status!: TaskStatus;
 
   @Column({ type: "integer", default: 0 })
-  totalMinutes!: number;
+  totalMilliseconds!: number;
 
   @ManyToOne(() => User, (user) => user.tasks, {
     nullable: false,
@@ -39,6 +39,9 @@ export class Task {
 
   @Column({ type: "uuid" })
   ownerId!: string;
+
+  @Column({ type: "timestamptz", nullable: true })
+  startedAt!: Date | null;
 
   @CreateDateColumn({ type: "timestamptz" })
   createdAt!: Date;

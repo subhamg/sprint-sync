@@ -70,15 +70,18 @@ export class TasksController {
     return this.tasks.updateStatus(id, dto, user.sub, isAdmin);
   }
 
-  @Post(":id/log-time")
-  async logTime(
-    @Req() req: Request,
-    @Param("id") id: string,
-    @Body() dto: LogTimeDto,
-  ) {
+  @Post(":id/start-timer")
+  async startTimer(@Req() req: Request, @Param("id") id: string) {
     const user = req.user as any;
     const isAdmin = user?.isAdmin === true;
-    return this.tasks.logTime(id, dto, user.sub, isAdmin);
+    return this.tasks.startTimer(id, user.sub, isAdmin);
+  }
+
+  @Post(":id/stop-timer")
+  async stopTimer(@Req() req: Request, @Param("id") id: string) {
+    const user = req.user as any;
+    const isAdmin = user?.isAdmin === true;
+    return this.tasks.stopTimer(id, user.sub, isAdmin);
   }
 
   @UseGuards(AdminGuard)

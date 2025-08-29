@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { authService } from "../services/AuthService";
 
 export default function AppHeader() {
-  const { userId, isAdmin } = useSelector((s: RootState) => s.auth);
+  const { userId, isAdmin, name } = useSelector((s: RootState) => s.auth);
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -26,7 +26,7 @@ export default function AppHeader() {
         <Text fw={600}>SprintSync</Text>
         <Group>
           <Text size="sm" c="dimmed">
-            {userId} {isAdmin ? "(admin)" : ""}
+            {name} {isAdmin ? "(admin)" : ""}
           </Text>
           <Button variant="light" onClick={onLogout}>
             Logout

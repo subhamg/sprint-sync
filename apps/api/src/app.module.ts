@@ -11,6 +11,7 @@ import { AiModule } from "./modules/ai/ai.module";
 import { LoggerModule } from "nestjs-pino";
 import { LatencyLoggingInterceptor } from "./common/logging/latency.interceptor";
 import { GlobalHttpExceptionFilter } from "./common/logging/http-exception.filter";
+import { JwtAuthGuard } from "./modules/auth/jwt.guard";
 
 @Module({
   imports: [
@@ -45,6 +46,11 @@ import { GlobalHttpExceptionFilter } from "./common/logging/http-exception.filte
     AiModule,
   ],
   controllers: [],
-  providers: [LatencyLoggingInterceptor, GlobalHttpExceptionFilter],
+  providers: [
+    LatencyLoggingInterceptor,
+    GlobalHttpExceptionFilter,
+    JwtAuthGuard,
+  ],
+  exports: [JwtAuthGuard],
 })
 export class AppModule {}

@@ -1,19 +1,20 @@
 import "reflect-metadata";
-import { NestFactory } from "@nestjs/core";
+import { NestFactory, Reflector } from "@nestjs/core";
 import { AppModule } from "./app.module";
-import cookieParser from "cookie-parser";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { ValidationPipe } from "@nestjs/common";
 import { RequestIdMiddleware } from "./common/logging/request-id.middleware";
 import { Logger, LoggerErrorInterceptor } from "nestjs-pino";
 import { LatencyLoggingInterceptor } from "./common/logging/latency.interceptor";
 import { GlobalHttpExceptionFilter } from "./common/logging/http-exception.filter";
+import { JwtAuthGuard } from "./modules/auth/jwt.guard";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
   app.useLogger(app.get(Logger));
 
-  app.use(cookieParser());
+  app.useGlobalGuards(app.get(JwtAuthGuard));
+
   app.use(new RequestIdMiddleware().use as any);
   app.useGlobalPipes(
     new ValidationPipe({
