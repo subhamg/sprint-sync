@@ -27,7 +27,12 @@ export class AuthService {
       user.name,
     );
     return {
-      user: { id: user.id, email: user.email, isAdmin: user.isAdmin },
+      user: {
+        id: user.id,
+        email: user.email,
+        isAdmin: user.isAdmin,
+        name: user.name,
+      },
       ...tokens,
     };
   }
