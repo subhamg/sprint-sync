@@ -6,6 +6,11 @@ SprintSync is a focused task management app with AI-powered daily planning. Itâ€
 
 - Watch the walkthrough: [Loom video](https://www.loom.com/share/8f4cd4b665554c93a13ed9f0e60b68e6)
 
+## Live
+
+- Live site: [sprint-sync-six.vercel.app](https://sprint-sync-six.vercel.app/)
+- Note: API runs on Render free plan; first request may take a moment to wake.
+
 ## Features
 
 - Auth: JWT Bearer (no cookies), role-aware (admin routes)
