@@ -19,6 +19,7 @@ type Task = {
   totalMilliseconds: number;
   startedAt?: string | null;
   isRunning?: boolean;
+  ownerName?: string | null;
 };
 
 export function KanbanBoard(props: {
@@ -129,6 +130,7 @@ function DraggableTask(props: {
         onStatusChange={props.onStatusChange}
         onStartTimer={props.onStartTimer}
         onStopTimer={props.onStopTimer}
+        ownerName={task.ownerName}
       />
     </div>
   );

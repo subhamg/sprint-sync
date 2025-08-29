@@ -31,6 +31,7 @@ export interface TaskCardProps {
   description: string | null;
   status: TaskStatus;
   totalMilliseconds: number;
+  ownerName?: string | null;
   startedAt?: string | null;
   isRunning?: boolean;
   onOpenEdit: (id: string) => void;
@@ -46,6 +47,7 @@ export default function TaskCard({
   description,
   status,
   totalMilliseconds,
+  ownerName,
   startedAt,
   isRunning,
   onOpenEdit,
@@ -140,10 +142,18 @@ export default function TaskCard({
             {description}
           </Text>
         )}
+
         <Group justify="space-between" mt="xs" align="center">
-          <Group gap="4px">
-            <IconClockFilled size={16} color="gray" />
-            <Text size="sm">{totalCompact} logged</Text>
+          <Group gap="xs" align="center">
+            {ownerName && (
+              <Text size="xs" c="dimmed">
+                Created by {ownerName}
+              </Text>
+            )}
+            <Group gap="4px">
+              <IconClockFilled size={16} color="gray" />
+              <Text size="sm">{totalCompact} logged</Text>
+            </Group>
           </Group>
           <Group gap="xs">
             {!isRunning ? (

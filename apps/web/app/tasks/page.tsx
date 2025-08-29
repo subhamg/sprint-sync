@@ -26,7 +26,7 @@ import { AnalyticsChart } from "../../components/AnalyticsChart";
 import { http } from "../../lib/http";
 
 export default function TasksPage() {
-  const { userId } = useSelector((s: RootState) => s.auth);
+  const { userId, isAdmin } = useSelector((s: RootState) => s.auth);
   const router = useRouter();
   const qc = useQueryClient();
   const [modalOpen, setModalOpen] = useState(false);
@@ -44,7 +44,7 @@ export default function TasksPage() {
 
   const { data } = useQuery({
     queryKey: ["tasks"],
-    queryFn: () => tasksService.list(),
+    queryFn: () => tasksService.list({ all: true }),
     enabled: !!userId || !!authService.getToken(),
   });
 
@@ -194,6 +194,7 @@ export default function TasksPage() {
                     description={t.description}
                     status={t.status}
                     totalMilliseconds={t.totalMilliseconds}
+                    ownerName={t.ownerName}
                     startedAt={t.startedAt || undefined}
                     isRunning={!!t.isRunning}
                     onOpenEdit={openEditById}

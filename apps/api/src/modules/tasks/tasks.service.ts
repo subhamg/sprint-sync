@@ -26,15 +26,28 @@ export class TasksService {
   async listForUser(userId: string, isAdmin: boolean, all?: boolean) {
     const tasks =
       isAdmin && all
-        ? await this.tasksRepo.find({ order: { createdAt: "DESC" } })
+        ? await this.tasksRepo.find({
+            relations: ["owner"],
+            order: { createdAt: "DESC" },
+          })
         : await this.tasksRepo.find({
             where: { ownerId: userId },
+            relations: ["owner"],
             order: { createdAt: "DESC" },
           });
 
     return tasks.map((t) => ({
-      ...t,
+      id: t.id,
+      title: t.title,
+      description: t.description,
+      status: t.status,
+      totalMilliseconds: t.totalMilliseconds,
+      ownerId: t.ownerId,
+      startedAt: t.startedAt,
+      createdAt: t.createdAt,
+      updatedAt: t.updatedAt,
       isRunning: !!t.startedAt,
+      ownerName: t.owner?.name ?? null,
     }));
   }
 

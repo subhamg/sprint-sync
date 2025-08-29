@@ -9,6 +9,7 @@ export interface TaskDto {
   status: TaskStatus;
   totalMilliseconds: number;
   ownerId: string;
+  ownerName?: string | null;
   createdAt: string;
   updatedAt: string;
   isRunning?: boolean;
