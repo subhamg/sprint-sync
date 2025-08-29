@@ -79,7 +79,12 @@ export class AuthController {
       example: {
         accessToken: "jwt",
         refreshToken: "jwt",
-        user: { id: "uuid", email: "demo@sprintsync.dev", isAdmin: false },
+        user: {
+          id: "uuid",
+          email: "demo@sprintsync.dev",
+          isAdmin: false,
+          name: "Demo User",
+        },
       },
     },
   })
