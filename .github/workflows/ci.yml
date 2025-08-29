@@ -31,7 +31,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile=false
 
-      - name: Test
+      - name: Test API
         env:
           CI: true
-        run: pnpm run test
+        run: pnpm -F @sprintsync/api run test
+
+      - name: Test Web
+        env:
+          CI: true
+        run: pnpm -F @sprintsync/web run test
