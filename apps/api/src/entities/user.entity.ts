@@ -30,9 +30,13 @@ export class User {
   @OneToMany(() => Task, (task: Task) => task.owner)
   tasks!: Task[];
 
-  @CreateDateColumn({ type: "timestamptz" })
+  @CreateDateColumn({
+    type: process.env.NODE_ENV === "test" ? "datetime" : "timestamptz",
+  })
   createdAt!: Date;
 
-  @UpdateDateColumn({ type: "timestamptz" })
+  @UpdateDateColumn({
+    type: process.env.NODE_ENV === "test" ? "datetime" : "timestamptz",
+  })
   updatedAt!: Date;
 }

@@ -25,7 +25,11 @@ export class Task {
   @Column({ type: "text", nullable: true })
   description!: string | null;
 
-  @Column({ type: "enum", enum: TaskStatus, default: TaskStatus.TODO })
+  @Column({
+    type: process.env.NODE_ENV === "test" ? "text" : "enum",
+    enum: process.env.NODE_ENV === "test" ? undefined : TaskStatus,
+    default: TaskStatus.TODO,
+  })
   status!: TaskStatus;
 
   @Column({ type: "integer", default: 0 })
@@ -40,12 +44,19 @@ export class Task {
   @Column({ type: "uuid" })
   ownerId!: string;
 
-  @Column({ type: "timestamptz", nullable: true })
+  @Column({
+    type: process.env.NODE_ENV === "test" ? "datetime" : "timestamptz",
+    nullable: true,
+  })
   startedAt!: Date | null;
 
-  @CreateDateColumn({ type: "timestamptz" })
+  @CreateDateColumn({
+    type: process.env.NODE_ENV === "test" ? "datetime" : "timestamptz",
+  })
   createdAt!: Date;
 
-  @UpdateDateColumn({ type: "timestamptz" })
+  @UpdateDateColumn({
+    type: process.env.NODE_ENV === "test" ? "datetime" : "timestamptz",
+  })
   updatedAt!: Date;
 }

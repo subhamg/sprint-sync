@@ -28,15 +28,26 @@ import { JwtAuthGuard } from "./modules/auth/jwt.guard";
     ThrottlerModule.forRoot([{ ttl: 60000, limit: 30 }]),
     TypeOrmModule.forRootAsync({
       useFactory: () => ({
-        type: "postgres",
-        url: process.env.DATABASE_URL,
-        host: process.env.DB_HOST,
-        port: process.env.DB_PORT ? Number(process.env.DB_PORT) : undefined,
-        username: process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
-        database: process.env.DB_NAME,
-        autoLoadEntities: true,
-        synchronize: true,
+        ...(process.env.NODE_ENV === "test"
+          ? {
+              type: "sqljs" as const,
+              autoSave: false,
+              entities: [User, Task],
+              synchronize: true,
+            }
+          : {
+              type: "postgres" as const,
+              url: process.env.DATABASE_URL,
+              host: process.env.DB_HOST,
+              port: process.env.DB_PORT
+                ? Number(process.env.DB_PORT)
+                : undefined,
+              username: process.env.DB_USER,
+              password: process.env.DB_PASSWORD,
+              database: process.env.DB_NAME,
+              autoLoadEntities: true,
+              synchronize: true,
+            }),
       }),
     }),
     TypeOrmModule.forFeature([User, Task]),

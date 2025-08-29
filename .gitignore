@@ -30,3 +30,4 @@ apps/**/.env.*
 .idea/
 .vscode/
 .history/
+.cursor/
