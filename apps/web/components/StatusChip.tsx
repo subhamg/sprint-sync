@@ -34,11 +34,6 @@ export default function StatusChip({
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
-  function handleChange(next: TaskStatus) {
-    setIsOpen(false);
-    onChange(next);
-  }
-
   return (
     <Menu opened={isOpen} onClose={() => setIsOpen(false)}>
       <Menu.Target>
@@ -47,7 +42,7 @@ export default function StatusChip({
           color={colorFor(status)}
           size="xs"
           tt="capitalize"
-          onClick={() => handleChange(nextStatus(status))}
+          onClick={() => setIsOpen(true)}
           rightSection={<IconCaretDownFilled size={16} />}
         >
           {status.replace("_", " ").toLowerCase()}
