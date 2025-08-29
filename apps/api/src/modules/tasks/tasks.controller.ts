@@ -29,13 +29,19 @@ import {
   ApiResponse,
   ApiTags,
 } from "@nestjs/swagger";
+import { Repository } from "typeorm";
+import { InjectRepository } from "@nestjs/typeorm";
+import { TimeLog } from "../../entities/time-log.entity";
 
 @ApiTags("Tasks")
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @Controller("tasks")
 export class TasksController {
-  constructor(private readonly tasks: TasksService) {}
+  constructor(
+    private readonly tasks: TasksService,
+    @InjectRepository(TimeLog) private readonly timeLogs: Repository<TimeLog>,
+  ) {}
 
   @ApiOperation({ summary: "List my tasks (admin can pass all=true)" })
   @ApiQuery({ name: "all", required: false, schema: { default: false } })
@@ -117,6 +123,27 @@ export class TasksController {
     const user = req.user as any;
     const isAdmin = user?.isAdmin === true;
     return this.tasks.stopTimer(id, user.sub, isAdmin);
+  }
+
+  @ApiOperation({ summary: "Time logged per day (current user)" })
+  @ApiQuery({ name: "days", required: false, description: "Lookback days", schema: { default: 14 } })
+  @Get("analytics/time-per-day")
+  async timePerDay(@Req() req: Request, @Query("days") days?: string) {
+    const user = req.user as any;
+    const lookback = Math.max(1, Math.min(90, Number(days) || 14));
+    const today = new Date();
+    const start = new Date(today);
+    start.setUTCDate(today.getUTCDate() - (lookback - 1));
+    const startDay = start.toISOString().slice(0, 10);
+    const rows = await this.timeLogs
+      .createQueryBuilder("t")
+      .select(["t.day AS day", "SUM(t.milliseconds) AS ms"])
+      .where("t.userId = :uid", { uid: user.sub })
+      .andWhere("t.day >= :startDay", { startDay })
+      .groupBy("t.day")
+      .orderBy("t.day", "ASC")
+      .getRawMany();
+    return rows.map((r) => ({ day: r.day, milliseconds: Number(r.ms) }));
   }
 
   @ApiOperation({ summary: "Delete task (admin only)" })

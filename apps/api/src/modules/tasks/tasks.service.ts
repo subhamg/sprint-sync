@@ -7,6 +7,7 @@ import {
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Task, TaskStatus } from "../../entities/task.entity";
+import { TimeLog } from "../../entities/time-log.entity";
 import {
   CreateTaskDto,
   LogTimeDto,
@@ -18,6 +19,7 @@ import {
 export class TasksService {
   constructor(
     @InjectRepository(Task) private readonly tasksRepo: Repository<Task>,
+    @InjectRepository(TimeLog) private readonly timeLogRepo: Repository<TimeLog>,
   ) {}
 
   async listForUser(userId: string, isAdmin: boolean, all?: boolean) {
@@ -114,6 +116,15 @@ export class TasksService {
     task.totalMilliseconds += ms;
     task.startedAt = null;
     const saved = await this.tasksRepo.save(task);
+    const day = new Date().toISOString().slice(0, 10);
+    await this.timeLogRepo.save(
+      this.timeLogRepo.create({
+        taskId: task.id,
+        userId,
+        milliseconds: ms,
+        day,
+      }),
+    );
     return { task: saved, addedMilliseconds: ms };
   }
 }

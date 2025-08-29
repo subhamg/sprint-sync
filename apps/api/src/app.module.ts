@@ -3,6 +3,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigModule } from "@nestjs/config";
 import { User } from "./entities/user.entity";
 import { Task } from "./entities/task.entity";
+import { TimeLog } from "./entities/time-log.entity";
 import { UsersModule } from "./modules/users/users.module";
 import { AuthModule } from "./modules/auth/auth.module";
 import { TasksModule } from "./modules/tasks/tasks.module";
@@ -32,7 +33,7 @@ import { JwtAuthGuard } from "./modules/auth/jwt.guard";
           ? {
               type: "sqljs" as const,
               autoSave: false,
-              entities: [User, Task],
+              entities: [User, Task, TimeLog],
               synchronize: true,
             }
           : {

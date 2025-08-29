@@ -13,6 +13,9 @@ import QuickStatsCard from "../../components/QuickStatsCard";
 import AiAssistantCard from "../../components/AiAssistantCard";
 import TaskCard from "../../components/TaskCard";
 import { authService } from "../../services/AuthService";
+import { KanbanBoard } from "../../components/KanbanBoard";
+import { AnalyticsChart } from "../../components/AnalyticsChart";
+import { http } from "../../lib/http";
 
 export default function TasksPage() {
   const { userId } = useSelector((s: RootState) => s.auth);
@@ -126,6 +129,15 @@ export default function TasksPage() {
   });
 
   const tasks = data || [];
+
+  const { data: analytics } = useQuery({
+    queryKey: ["time-per-day"],
+    queryFn: async () => {
+      const { data } = await http.get("/tasks/analytics/time-per-day");
+      return data as { day: string; milliseconds: number }[];
+    },
+    enabled: !!userId || !!authService.getToken(),
+  });
   const todo = tasks.filter((t) => t.status === "TODO").length;
   const inProgress = tasks.filter((t) => t.status === "IN_PROGRESS").length;
   const done = tasks.filter((t) => t.status === "DONE").length;
@@ -145,32 +157,16 @@ export default function TasksPage() {
           <Grid.Col span={{ base: 12, md: 4, lg: 3 }}>
             <Stack>
               <QuickStatsCard todo={todo} inProgress={inProgress} done={done} />
+              {analytics && <AnalyticsChart data={analytics} />}
               <AiAssistantCard />
             </Stack>
           </Grid.Col>
 
           <Grid.Col span={{ base: 12, md: 8, lg: 9 }}>
-            <Stack>
-              {tasks.map((t) => (
-                <TaskCard
-                  key={t.id}
-                  id={t.id}
-                  title={t.title}
-                  description={t.description}
-                  status={t.status}
-                  totalMilliseconds={t.totalMilliseconds}
-                  startedAt={t.startedAt || undefined}
-                  isRunning={!!t.isRunning}
-                  onOpenEdit={openEditById}
-                  onDelete={(id) => deleteMutation.mutate(id)}
-                  onStatusChange={(id, next) =>
-                    statusMutation.mutate({ id, next })
-                  }
-                  onStartTimer={(id) => startTimerMutation.mutate(id)}
-                  onStopTimer={(id) => stopTimerMutation.mutate(id)}
-                />
-              ))}
-            </Stack>
+            <KanbanBoard
+              tasks={tasks as any}
+              onMove={(id, next) => statusMutation.mutate({ id, next })}
+            />
           </Grid.Col>
         </Grid>
 
