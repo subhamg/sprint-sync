@@ -2,6 +2,10 @@
 
 SprintSync is a focused task management app with AI-powered daily planning. It’s a production-grade monorepo (NestJS API + Next.js Web) with clean architecture, observability, tests, and deploy-ready configs.
 
+## Demo
+
+- Watch the walkthrough: [Loom video](https://www.loom.com/share/8f4cd4b665554c93a13ed9f0e60b68e6)
+
 ## Features
 
 - Auth: JWT Bearer (no cookies), role-aware (admin routes)
