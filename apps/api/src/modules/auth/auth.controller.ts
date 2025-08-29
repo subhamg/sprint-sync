@@ -23,6 +23,13 @@ import {
 } from "@nestjs/swagger";
 import { Public } from "../../decorators/public.decorator";
 import { LoginDto } from "./dtos/login.dto";
+import { IsJWT } from "class-validator";
+import { JwtService } from "@nestjs/jwt";
+
+class RefreshDto {
+  @IsJWT()
+  refreshToken!: string;
+}
 
 @ApiTags("Auth")
 @Controller("auth")
@@ -99,6 +106,18 @@ export class AuthController {
   async logout() {
     // No-op in bearer mode
     return { ok: true };
+  }
+
+  @Public()
+  @ApiOperation({ summary: "Refresh access token using refresh token" })
+  @ApiBody({ schema: { example: { refreshToken: "<jwt>" } } })
+  @ApiResponse({
+    status: 200,
+    schema: { example: { accessToken: "<jwt>", refreshToken: "<jwt>" } },
+  })
+  @Post("refresh")
+  async refresh(@Body() body: RefreshDto) {
+    return this.auth.refresh(body.refreshToken);
   }
 
   @ApiBearerAuth()
