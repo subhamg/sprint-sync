@@ -60,6 +60,7 @@ export class TasksController {
   }
 
   @ApiOperation({ summary: "Get task by id" })
+  @ApiResponse({ status: 404, description: "Task not found" })
   @Get(":id")
   async get(@Req() req: Request, @Param("id") id: string) {
     const user = req.user as any;
@@ -71,6 +72,7 @@ export class TasksController {
   @ApiBody({
     schema: { example: { title: "New title", description: "Updated" } },
   })
+  @ApiResponse({ status: 404, description: "Task not found" })
   @Put(":id")
   async update(
     @Req() req: Request,
@@ -84,6 +86,8 @@ export class TasksController {
 
   @ApiOperation({ summary: "Update status (TODO→IN_PROGRESS→DONE)" })
   @ApiBody({ schema: { example: { nextStatus: "IN_PROGRESS" } } })
+  @ApiResponse({ status: 400, description: "Illegal status transition" })
+  @ApiResponse({ status: 404, description: "Task not found" })
   @Patch(":id/status")
   async updateStatus(
     @Req() req: Request,
@@ -95,6 +99,9 @@ export class TasksController {
     return this.tasks.updateStatus(id, dto, user.sub, isAdmin);
   }
 
+  @ApiOperation({ summary: "Start timer" })
+  @ApiResponse({ status: 400, description: "Timer already running" })
+  @ApiResponse({ status: 404, description: "Task not found" })
   @Post(":id/start-timer")
   async startTimer(@Req() req: Request, @Param("id") id: string) {
     const user = req.user as any;
@@ -103,6 +110,8 @@ export class TasksController {
   }
 
   @ApiOperation({ summary: "Stop timer (adds minutes)" })
+  @ApiResponse({ status: 400, description: "Timer not running" })
+  @ApiResponse({ status: 404, description: "Task not found" })
   @Post(":id/stop-timer")
   async stopTimer(@Req() req: Request, @Param("id") id: string) {
     const user = req.user as any;
@@ -112,6 +121,7 @@ export class TasksController {
 
   @ApiOperation({ summary: "Delete task (admin only)" })
   @UseGuards(AdminGuard)
+  @ApiResponse({ status: 404, description: "Task not found" })
   @Delete(":id")
   async remove(@Param("id") id: string) {
     return this.tasks.delete(id, "", true);

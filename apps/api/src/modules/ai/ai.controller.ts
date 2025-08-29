@@ -40,6 +40,7 @@ export class AiController {
       },
     },
   })
+  @ApiResponse({ status: 429, description: "Rate limited" })
   @Throttle({ default: { limit: 5, ttl: 60_000 } })
   @Post("suggest")
   async suggest(@Req() req: Request) {
