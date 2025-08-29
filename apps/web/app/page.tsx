@@ -11,8 +11,8 @@ export default function LandingPage() {
           SprintSync
         </Title>
         <Text c="dimmed" ta="center" maw={600}>
-          Plan faster. Focus deeper. Track time effortlessly. SprintSync helps you
-          organize tasks and get an AI-powered daily plan.
+          Plan faster. Focus deeper. Track time effortlessly. SprintSync helps
+          you organize tasks and get an AI-powered daily plan.
         </Text>
         <Group mt="md">
           <Button component={Link} href="/login" size="md">
@@ -24,14 +24,5 @@ export default function LandingPage() {
         </Group>
       </Stack>
     </Container>
-  );
-}
-
-export default function Page() {
-  return (
-    <main style={{ padding: 24 }}>
-      <h1>SprintSync</h1>
-      <p>Web app scaffold is live.</p>
-    </main>
   );
 }
