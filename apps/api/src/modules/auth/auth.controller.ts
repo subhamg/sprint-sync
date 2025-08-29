@@ -40,7 +40,7 @@ export class AuthController {
   ) {}
 
   @Public()
-  @ApiOperation({ summary: "Register (disabled in production)" })
+  @ApiOperation({ summary: "Register" })
   @ApiBody({
     schema: {
       example: {
@@ -58,9 +58,6 @@ export class AuthController {
   async register(
     @Body() body: { email: string; name: string; password: string },
   ) {
-    if (process.env.NODE_ENV === "production") {
-      throw new ForbiddenException("Registration is disabled in production");
-    }
     const exists = await this.users.findByEmail(body.email);
     if (exists) throw new BadRequestException("Email already in use");
     const passwordHash = await bcrypt.hash(body.password, 10);
