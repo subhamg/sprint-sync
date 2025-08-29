@@ -49,8 +49,7 @@ export class TasksController {
   @Get()
   async list(@Req() req: Request, @Query("all") all?: string) {
     const user = req.user as any;
-    const isAdmin = user?.isAdmin === true;
-    return this.tasks.listForUser(user.sub, isAdmin, all === "true");
+    return this.tasks.listForUser(user.sub, all === "true");
   }
 
   @ApiOperation({ summary: "Create task" })

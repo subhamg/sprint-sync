@@ -23,18 +23,17 @@ export class TasksService {
     private readonly timeLogRepo: Repository<TimeLog>,
   ) {}
 
-  async listForUser(userId: string, isAdmin: boolean, all?: boolean) {
-    const tasks =
-      isAdmin && all
-        ? await this.tasksRepo.find({
-            relations: ["owner"],
-            order: { createdAt: "DESC" },
-          })
-        : await this.tasksRepo.find({
-            where: { ownerId: userId },
-            relations: ["owner"],
-            order: { createdAt: "DESC" },
-          });
+  async listForUser(userId: string, all?: boolean) {
+    const tasks = all
+      ? await this.tasksRepo.find({
+          relations: ["owner"],
+          order: { createdAt: "DESC" },
+        })
+      : await this.tasksRepo.find({
+          where: { ownerId: userId },
+          relations: ["owner"],
+          order: { createdAt: "DESC" },
+        });
 
     return tasks.map((t) => ({
       id: t.id,
