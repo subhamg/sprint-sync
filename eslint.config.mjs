@@ -5,7 +5,7 @@ import globals from "globals";
 export default [
   js.configs.recommended,
   {
-    files: ["**/*.ts", "**/*.tsx"],
+    files: ["apps/web/**/*.{ts,tsx}"],
     languageOptions: {
       parser: tsParser,
       ecmaVersion: "latest",
@@ -21,11 +21,28 @@ export default [
     },
   },
   {
+    files: ["apps/web/lib/**/*.{ts,tsx}", "apps/web/app/**/*.{ts,tsx}", "apps/web/components/**/*.{ts,tsx}"],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+        window: "readonly",
+        document: "readonly",
+        localStorage: "readonly",
+        setInterval: "readonly",
+        clearInterval: "readonly",
+        console: "readonly",
+        process: "readonly",
+      },
+    },
+  },
+  {
     files: ["**/*.test.ts", "**/*.test.tsx", "**/vitest.config.ts"],
     languageOptions: {
       globals: {
         ...globals.node,
         ...globals.browser,
+        global: "writable",
         // common vitest globals
         describe: "readonly",
         it: "readonly",
