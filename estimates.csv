@@ -10,4 +10,4 @@ Web,AI suggest drawer UI,2,4,1,AI card + drawer details
 Observability,Structured logging, request id, errors,2,4,1.5,nestjs-pino; requestId middleware; latency interceptor; global error filter
 Docker,Compose with api/web/db, env examples,2,4,1.5,Dockerfiles + compose with healthchecks; env examples
 CI & Tests,GitHub Actions, api unit/e2e, web tests,3,6,3,Unit + e2e (API), unit (Web), sql.js test DB, CI workflow
-Docs,README, architecture, endpoints, 2,4,0.5,
+Docs,README, architecture, endpoints, 2,4,2, Added README.md
