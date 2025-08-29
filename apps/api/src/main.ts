@@ -13,8 +13,6 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
   app.useLogger(app.get(Logger));
 
-  app.useGlobalGuards(app.get(JwtAuthGuard));
-
   app.use(new RequestIdMiddleware().use as any);
   app.useGlobalPipes(
     new ValidationPipe({
@@ -41,7 +39,7 @@ async function bootstrap() {
     .setTitle("SprintSync API")
     .setDescription("API docs")
     .setVersion("1.0")
-    .addBearerAuth({ type: "http", scheme: "bearer", bearerFormat: "JWT" })
+    .addBearerAuth()
     .build();
 
   const documentFactory = () => SwaggerModule.createDocument(app, config);
