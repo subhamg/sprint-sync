@@ -6,7 +6,15 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { tasksService, TaskStatus } from "../../services/TasksService";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button, Container, Grid, Group, Stack, Title } from "@mantine/core";
+import {
+  Button,
+  Container,
+  Grid,
+  Group,
+  SegmentedControl,
+  Stack,
+  Title,
+} from "@mantine/core";
 import TaskModal from "../../components/TaskModal";
 import { IconPlus } from "@tabler/icons-react";
 import QuickStatsCard from "../../components/QuickStatsCard";
@@ -27,6 +35,7 @@ export default function TasksPage() {
     title: string;
     description: string | null;
   }>(null);
+  const [view, setView] = useState<"list" | "kanban">("list");
 
   useEffect(() => {
     const hasToken = typeof window !== "undefined" && !!authService.getToken();
@@ -142,15 +151,27 @@ export default function TasksPage() {
   const inProgress = tasks.filter((t) => t.status === "IN_PROGRESS").length;
   const done = tasks.filter((t) => t.status === "DONE").length;
 
+  console.log(analytics);
+
   return (
     <main>
       <AppHeader />
-      <Container py="md">
+      <Container py="md" size="xl">
         <Group justify="space-between" mb="md">
           <Title order={3}>My Tasks</Title>
-          <Button leftSection={<IconPlus size={16} />} onClick={openCreate}>
-            New Task
-          </Button>
+          <Group gap="xs">
+            <SegmentedControl
+              data={[
+                { label: "List", value: "list" },
+                { label: "Kanban", value: "kanban" },
+              ]}
+              value={view}
+              onChange={(value) => setView(value as "list" | "kanban")}
+            />
+            <Button leftSection={<IconPlus size={16} />} onClick={openCreate}>
+              New Task
+            </Button>
+          </Group>
         </Group>
 
         <Grid gutter="lg">
@@ -163,10 +184,41 @@ export default function TasksPage() {
           </Grid.Col>
 
           <Grid.Col span={{ base: 12, md: 8, lg: 9 }}>
-            <KanbanBoard
-              tasks={tasks as any}
-              onMove={(id, next) => statusMutation.mutate({ id, next })}
-            />
+            {view === "list" ? (
+              <Stack>
+                {tasks.map((t) => (
+                  <TaskCard
+                    key={t.id}
+                    id={t.id}
+                    title={t.title}
+                    description={t.description}
+                    status={t.status}
+                    totalMilliseconds={t.totalMilliseconds}
+                    startedAt={t.startedAt || undefined}
+                    isRunning={!!t.isRunning}
+                    onOpenEdit={openEditById}
+                    onDelete={(id) => deleteMutation.mutate(id)}
+                    onStatusChange={(id, next) =>
+                      statusMutation.mutate({ id, next })
+                    }
+                    onStartTimer={(id) => startTimerMutation.mutate(id)}
+                    onStopTimer={(id) => stopTimerMutation.mutate(id)}
+                  />
+                ))}
+              </Stack>
+            ) : (
+              <KanbanBoard
+                tasks={tasks as any}
+                onMove={(id, next) => statusMutation.mutate({ id, next })}
+                onOpenEdit={openEditById}
+                onDelete={(id) => deleteMutation.mutate(id)}
+                onStatusChange={(id, next) =>
+                  statusMutation.mutate({ id, next })
+                }
+                onStartTimer={(id) => startTimerMutation.mutate(id)}
+                onStopTimer={(id) => stopTimerMutation.mutate(id)}
+              />
+            )}
           </Grid.Col>
         </Grid>
 

@@ -41,7 +41,11 @@ describe("TasksService", () => {
       updatedAt: new Date(),
     },
   ]);
-  const svc = new TasksService(repo);
+  const timeLogRepo: any = {
+    create: jest.fn((o) => o),
+    save: jest.fn(async (o) => o),
+  };
+  const svc = new TasksService(repo as any, timeLogRepo);
 
   it("allows TODO -> IN_PROGRESS -> DONE transitions for non-admin", async () => {
     const t1 = await svc.updateStatus(
@@ -60,11 +64,15 @@ describe("TasksService", () => {
     expect(t2.status).toBe(TaskStatus.DONE);
   });
 
-  it("rejects illegal transitions for non-admin", async () => {
+  it("allows arbitrary transitions for non-admin now", async () => {
     data.get("t1")!.status = TaskStatus.TODO;
-    await expect(
-      svc.updateStatus("t1", { nextStatus: TaskStatus.DONE }, "u1", false),
-    ).rejects.toBeTruthy();
+    const t = await svc.updateStatus(
+      "t1",
+      { nextStatus: TaskStatus.DONE },
+      "u1",
+      false,
+    );
+    expect(t.status).toBe(TaskStatus.DONE);
   });
 
   it("start/stop timer updates totalMilliseconds", async () => {

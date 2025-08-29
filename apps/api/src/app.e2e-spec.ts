@@ -91,18 +91,18 @@ describe("API E2E", () => {
       .expect(200);
     expect(toDone.body.status).toBe("DONE");
 
-    // illegal transition for non-admin (TODO -> DONE)
+    // non-admin transition now allowed
     const created2 = await request(app.getHttpServer())
       .post("/tasks")
       .set("Authorization", `Bearer ${token}`)
-      .send({ title: "Illegal", description: "x" })
+      .send({ title: "Change", description: "x" })
       .expect(201);
     const taskId2 = created2.body.id;
     await request(app.getHttpServer())
       .patch(`/tasks/${taskId2}/status`)
       .set("Authorization", `Bearer ${token}`)
       .send({ nextStatus: "DONE" })
-      .expect(403);
+      .expect(200);
 
     // non-admin cannot delete
     await request(app.getHttpServer())

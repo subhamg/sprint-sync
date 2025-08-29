@@ -35,14 +35,6 @@ export default function StatusChip({
   const [isOpen, setIsOpen] = useState(false);
 
   function handleChange(next: TaskStatus) {
-    if (status === "DONE" && !isAdmin) {
-      notifications.show({
-        color: "yellow",
-        message:
-          "You cannot change the status of a done task. Only admins can do this.",
-      });
-      return;
-    }
     setIsOpen(false);
     onChange(next);
   }

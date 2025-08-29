@@ -19,7 +19,8 @@ import {
 export class TasksService {
   constructor(
     @InjectRepository(Task) private readonly tasksRepo: Repository<Task>,
-    @InjectRepository(TimeLog) private readonly timeLogRepo: Repository<TimeLog>,
+    @InjectRepository(TimeLog)
+    private readonly timeLogRepo: Repository<TimeLog>,
   ) {}
 
   async listForUser(userId: string, isAdmin: boolean, all?: boolean) {
@@ -81,12 +82,6 @@ export class TasksService {
     return { ok: true };
   }
 
-  canTransition(current: TaskStatus, next: TaskStatus) {
-    if (current === TaskStatus.TODO) return next === TaskStatus.IN_PROGRESS;
-    if (current === TaskStatus.IN_PROGRESS) return next === TaskStatus.DONE;
-    return false;
-  }
-
   async updateStatus(
     id: string,
     dto: UpdateStatusDto,
@@ -94,9 +89,7 @@ export class TasksService {
     isAdmin: boolean,
   ) {
     const task = await this.getById(id, userId, isAdmin);
-    if (!this.canTransition(task.status, dto.nextStatus) && !isAdmin) {
-      throw new ForbiddenException("Illegal status transition");
-    }
+    // Allow any owner (or admin) to set arbitrary status
     task.status = dto.nextStatus;
     return this.tasksRepo.save(task);
   }

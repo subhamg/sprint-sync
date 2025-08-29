@@ -4,6 +4,7 @@ import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 import { ReactNode } from "react";
 import Providers from "./providers";
 import { Notifications } from "@mantine/notifications";
+import "@mantine/charts/styles.css";
 
 export const metadata = {
   title: "SprintSync",

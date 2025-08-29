@@ -126,7 +126,12 @@ export class TasksController {
   }
 
   @ApiOperation({ summary: "Time logged per day (current user)" })
-  @ApiQuery({ name: "days", required: false, description: "Lookback days", schema: { default: 14 } })
+  @ApiQuery({
+    name: "days",
+    required: false,
+    description: "Lookback days",
+    schema: { default: 14 },
+  })
   @Get("analytics/time-per-day")
   async timePerDay(@Req() req: Request, @Query("days") days?: string) {
     const user = req.user as any;
@@ -143,6 +148,8 @@ export class TasksController {
       .groupBy("t.day")
       .orderBy("t.day", "ASC")
       .getRawMany();
+
+    console.log(rows);
     return rows.map((r) => ({ day: r.day, milliseconds: Number(r.ms) }));
   }
 
